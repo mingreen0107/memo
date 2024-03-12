@@ -31,7 +31,24 @@ class MyApp extends StatelessWidget {
                   color: Colors.grey[200],
                   child: Row(
                     children: [
-
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage('images/cat2.webp'),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage('images/cat1.png'),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage('images/cat3.jpg'),
+                      )
                     ],
                   ),
                 )),
@@ -39,6 +56,58 @@ class MyApp extends StatelessWidget {
                 flex:8,
                 child: Container(
                   color: Colors.white,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              child: FlutterLogo(
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text(
+                              'mingreen',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Spacer(),
+                            Icon(Icons.more_horiz)
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.asset('images/cat4.webp'),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.favorite_border),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.comment),
+                                    SizedBox(width: 8),
+                                    Icon(Icons.bookmark_border),
+                                  ],
+                                ),
+                                Text(
+                                  'Liked by more than 5',
+                                ),
+                              ],
+                            ),
+                          )
+                      )
+                    ],
+                  ),
                 ))
           ],
         ),
