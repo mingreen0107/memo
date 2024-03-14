@@ -74,7 +74,6 @@ class MyApp extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(15),
                 child: Column(
-
                 ),
               ),
             )
