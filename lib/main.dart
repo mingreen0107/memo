@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:memo/database/database_helper.dart';
 import 'models/memo_data.dart';
+import 'screen/memo_input_page.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  //const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +26,15 @@ class MyMemoAppPage extends StatefulWidget {
 }
 
 class _MyMemoAppPageState extends State<MyMemoAppPage> {
-  List<MemoData> items = [
-    MemoData(content: 'Memo 1', createAt: DateTime(2022, 12, 31)),
-    MemoData(content: 'Memo 2', createAt: DateTime(2022, 1, 1)),
-    MemoData(content: 'Memo 3', createAt: DateTime(2023, 1, 5)),
-    MemoData(content: 'Memo 4', createAt: DateTime(2023, 2, 10)),
-  ];
+  DatabaseHelper dbHelper = DatabaseHelper();
+  late Future<List<MemoData>> memos;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    memos = dbHelper.getMemos();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,36 +42,91 @@ class _MyMemoAppPageState extends State<MyMemoAppPage> {
           title: Text('Memo'),
           backgroundColor: Colors.amber,
           actions: [
-            TextButton(
+            IconButton(
                 onPressed: (){
-                  setState(() {
-                    items.add(
-                      MemoData(content: 'new item', createAt: DateTime.now())
-                    );
-                    print(items);
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) => MemoInputPage())).then((value) {
+                    if (!value.isEmpty) {
+                      setState(() {
+                        dbHelper.insertMemo(
+                          MemoData(content: value, createAt: DateTime.now()));
+                        memos = dbHelper.getMemos();
+                      });
+                    }
                   });
                 },
-                child: Text('button'))
+                icon: Icon(Icons.create),
+            )
           ],
         ),
-        body: CustomListView(items: items,
-        onDelete: (index){
-          setState(() {
-            items.removeAt(index);
-            print(itmes);
-          });
-        },)
-    );
+        body: FutureBuilder<List<MemoData>>(
+          future: memos,
+          builder: (context, snapshot){
+            var items = snapshot.data ?? [];
+            return ListView(
+              children: groupMemoDataByYear(items).entries.map((entry) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        '${entry.key}',
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    CustomListView(
+                      items: entry.value,
+                      onDelete: (customId){
+                        setState(() {
+                          dbHelper.deleteMemo(customId);
+                          memos = dbHelper.getMemos();
+                        });
+                      },
+                      onUpdate: (customMemo){
+                        setState(() {
+                          dbHelper.updateMemo(customMemo);
+                          memos = dbHelper.getMemos();
+                        });
+                      },
+                    )
+                  ],
+                );
+              }).toList(),
+            );
+          },
+        ));
+  }
+  Map<int, List<MemoData>> groupMemoDataByYear(List<MemoData> items) {
+    Map<int, List<MemoData>> memoByYear = {};
+
+    for (var item in items) {
+      int year = item.createAt.year;
+
+      if(!memoByYear.containsKey(year)){
+        memoByYear[year] = [];
+      }
+      memoByYear[year]?.add(item);
+    }
+    return memoByYear;
   }
 }
 class CustomListView extends StatelessWidget {
   final List<MemoData> items;
   final Function(int) onDelete;
-  const CustomListView({super.key, required this.items, required this.onDelete});
+  final Function(MemoData) onUpdate;
+
+  const CustomListView(
+      {super.key,
+        required this.items,
+        required this.onDelete,
+        required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         itemCount: items.length,
         itemBuilder: (context, index) {
           return ListTile(
@@ -75,10 +135,23 @@ class CustomListView extends StatelessWidget {
             tileColor: Colors.amber[100],
             trailing: IconButton(
               onPressed: (){
-                onDelete(index);
+                onDelete(items[index].id!);
               },
               icon: Icon(Icons.delete),
             ),
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) =>
+                      MemoInputPage(initContent: items[index].content)))
+                  .then((value){
+                    if (items[index].content != value){
+                      onUpdate(MemoData(
+                          id: items[index].id,
+                          content: value,
+                          createAt: items[index].createAt));
+                    }
+              });
+            },
           );
         });
   }
