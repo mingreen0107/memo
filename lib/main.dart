@@ -31,7 +31,6 @@ class _MyMemoAppPageState extends State<MyMemoAppPage> {
 
   @override
   void initState() {
-
     super.initState();
     memos = dbHelper.getMemos();
   }
