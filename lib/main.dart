@@ -94,7 +94,8 @@ class _MyMemoAppPageState extends State<MyMemoAppPage> {
               }).toList(),
             );
           },
-        ));
+        )
+    );
   }
   Map<int, List<MemoData>> groupMemoDataByYear(List<MemoData> items) {
     Map<int, List<MemoData>> memoByYear = {};
