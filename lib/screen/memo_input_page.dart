@@ -31,7 +31,9 @@ class _MemoInputPageState extends State<MemoInputPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Add Memo'),
+        title: Text(
+            'Add Memo'
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

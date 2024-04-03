@@ -144,7 +144,6 @@ class CustomListView extends StatelessWidget {
                   MaterialPageRoute(builder: (context) =>
                       MemoInputPage(initContent: items[index].content)))
                   .then((value){
-
                     if (items[index].content != value){
                       onUpdate(MemoData(
                           id: items[index].id,
