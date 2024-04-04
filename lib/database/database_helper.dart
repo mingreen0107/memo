@@ -9,8 +9,8 @@ class DatabaseHelper {
   Future<void> initDatabase() async {
     if (_database == null) {
       var databasesPath = await getDatabasesPath();
-      String path = join(databasesPath, 'memos.db');
 
+      String path = join(databasesPath, 'memos.db');
       _database = await openDatabase(path, version: 1,
           onCreate: (Database db, int version) async {
             await db.execute('''
