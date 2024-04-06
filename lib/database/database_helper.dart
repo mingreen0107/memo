@@ -23,7 +23,6 @@ class DatabaseHelper {
       });
     }
   }
-
   Future<List<MemoData>> getMemos() async {
     await initDatabase();
     List<Map<String, dynamic>> maps = await _database!.query('memos');
