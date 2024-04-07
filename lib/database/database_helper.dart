@@ -38,7 +38,6 @@ class DatabaseHelper {
     await initDatabase();
     await _database!.insert('memos', memo.toMap());
   }
-
   Future<void> deleteMemo(int id) async {
     await initDatabase();
     await _database!.delete('memos', where: 'id = ?', whereArgs: [id]);
