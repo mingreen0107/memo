@@ -42,7 +42,6 @@ class DatabaseHelper {
     await initDatabase();
     await _database!.delete('memos', where: 'id = ?', whereArgs: [id]);
   }
-
   Future<void> updateMemo(MemoData memo) async {
     await initDatabase();
     await _database!
